@@ -1,10 +1,9 @@
-const { MongoClient, ObjectID } =require('mongodb')
+const { MongoClient, ObjectID } = require('mongodb');
 
 const connectionURL = 'mongodb://127.0.0.1:27017';
 const databaseName = 'task-manager';
 
 const id = new ObjectID();
-console.log(id)
 
 MongoClient.connect(connectionURL, { useUnifiedTopology: true, useNewUrlParser: true }, (error, client) => {
 	if (error) {
@@ -12,49 +11,23 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true, useNewUrlParser: 
 	}
 
 	const db = client.db(databaseName);
-	// db.collection('users').insertOne({
-	//     name: 'Vlad',
-	//     age: 33
-	// }, (error, result) => {
-	//     if(error) {
-	//         return console.log('Unable to insert user.')
-	//     }
 
-	//     console.log(result.ops)
-	// })
-	// db.collection('users').insertMany([
-	//     {
-	//         name: 'Jen',
-	//         age: 28
-	//     }, {
-	//         name: 'Gunter',
-	//         age: 27
-	//     }
-	// ], (error, result) =>{
-	//     if(error){
-	//         return console.log('Unable to insert dicuments')
-	//     }
+	db.collection('count').findOne({ _id: new ObjectID('5db737a7eab61719d5ccdd9b') }, (error, user) => {
+		if (error) {
+			return console.log('Unable to fetch.');
+		}
+		console.log(user);
+	});
 
-	//     console.log(result.ops)
-	// })
+	db.collection('users').find({ age: 33 }).toArray((error, users)=> {
+		console.log(users)
+	});
 
-	// db.collection('tasks').insertMany([
-	// 	{
-	// 		description: 'First',
-	// 		completed: true
-	// 	},
-	// 	{
-	// 		description: 'Second',
-	// 		completed: false
-	// 	},
-	// 	{
-	// 		description: 'third',
-	// 		completed: true
-	// 	}
-	// ], (error, result) => {
-	// 	if (error) {
-	// 		return console.log('Unable to insert tasks');
-	// 	}
-	// 	console.log(result.ops);
-	// });
+	db.collection('tasks').findOne({ _id: new ObjectID("5db72f8ad4517016d04ca7c9") }, (error, task) => {
+		console.log(task)
+	})
+
+	db.collection('tasks').find({ completed: true }).toArray((error, tasks) => {
+		console.log(tasks)
+	})
 });
