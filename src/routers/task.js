@@ -1,10 +1,13 @@
 const express = require('express');
 const router = new express.Router();
+const auth = require('../middleware/auth.js');
 const Task = require('../models/task.js');
 
-router.post('/tasks', async (req, res) => {
-	const task = new Task(req.body);
-
+router.post('/tasks', auth, async (req, res) => {
+	const task = new Task({
+		...req.body,
+		owner: req.user._id
+	})
 	try {
 		await task.save();
 		res.status(201).send(task);
@@ -47,9 +50,9 @@ router.patch('/tasks/:id', async (req, res) => {
 	}
 
 	try {
-		const task = await Task.findById(_id)
-		updates.forEach((update) => task[update] = req.body[update])
-		await task.save()
+		const task = await Task.findById(_id);
+		updates.forEach((update) => (task[update] = req.body[update]));
+		await task.save();
 
 		if (!task) {
 			return res.status(404).send();
